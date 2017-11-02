@@ -8,47 +8,74 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define MAXLINE 4096
+#define LOG_TAG "[CLIENT] "
+#define LOGI(fmt, ...) printf(LOG_TAG fmt, ##__VA_ARGS__)
+#define LOGE(fmt, ...) printf(LOG_TAG fmt, ##__VA_ARGS__)
+
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 6666
+#define BUFFER_MAX 1024
 
 int main(int argc, char **argv)
 {
-	int sockfd, n;
-	char recvline[4096], sendline[4096];
-	struct sockaddr_in servaddr;
+	int sockfd;
+	int size;
+	int running_flag = 0;
+	char rbuff[BUFFER_MAX];
+	char sbuff[BUFFER_MAX];
+	struct sockaddr_in server_addr;
 
+#if 0
 	if (argc != 2) {
-		printf("usage: ./client <ipaddress>\n");
+		LOGE("usage: ./client <ipaddress>\n");
 		exit(0);
 	}
+#endif
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		printf("create socket error: %s(errno: %d)\n", strerror(errno),
+		LOGE("create socket error: %s(errno: %d)\n", strerror(errno),
 		       errno);
 		exit(0);
 	}
 
-	memset(&servaddr, 0, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(6666);
-	if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) {
-		printf("inet_pton error for %s\n", argv[1]);
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(SERVER_PORT);
+	if (inet_pton(AF_INET, SERVER_IP, &server_addr.sin_addr) <= 0) {
+		LOGE("inet_pton error for %s\n", SERVER_IP);
 		exit(0);
 	}
 
-	if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0) {
-		printf("connect error: %s(errno: %d)\n", strerror(errno),
+	if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
+		LOGE("connect error: %s(errno: %d)\n", strerror(errno),
 		       errno);
 		exit(0);
 	}
 
-	printf("send msg to server: \n");
-	fgets(sendline, 4096, stdin);
-	if (send(sockfd, sendline, strlen(sendline), 0) < 0) {
-		printf("send msg error: %s(errno: %d)\n", strerror(errno),
-		       errno);
-		exit(0);
+	running_flag = 1;
+	LOGI("SERVER-%d connected\n", sockfd);
+	while (running_flag > 0) {
+		LOGI(">>> send msg to server: \n");
+		memset(sbuff, 0, BUFFER_MAX);
+		fgets(sbuff, BUFFER_MAX, stdin);
+		if (strncmp(sbuff, "exit", 4) == 0)
+			running_flag = 0;
+		size = send(sockfd, sbuff, strlen(sbuff), 0);
+		if (size < 0) {
+			LOGE("send msg error: %s(errno: %d)\n", strerror(errno),
+			       errno);
+			break;
+		}
+		size = recv(sockfd, rbuff, BUFFER_MAX, 0);
+		if (size < 0) {
+			LOGE("send msg error: %s(errno: %d)\n", strerror(errno),
+			       errno);
+			break;
+		}
+		LOGI("<<< SERVER-%d msg: (%d) %s\n", sockfd, size, rbuff);
 	}
 
+	LOGI("SERVER-%d disconnected\n", sockfd);
 	close(sockfd);
 	exit(0);
 }
