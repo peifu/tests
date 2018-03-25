@@ -49,7 +49,7 @@ static void msg_lock(void)
 
 	LOGL();
 	if (e) {
-		LOGE("pthread_mutex_lock: %s", strerror(e));
+		LOGE("pthread_mutex_lock: %s\n", strerror(e));
 		LOGE("terminating...");
 		exit(EXIT_FAILURE);
 	}
@@ -90,7 +90,7 @@ static void msg_cond_wait(void)
 	ts.tv_sec += COND_TIMEOUT;
 	e = pthread_cond_timedwait(&msg_cond, &msg_mutex, &ts);
 	if (e) {
-		LOGE("pthread_cond_wait: %s", strerror(e));
+		LOGE("pthread_cond_wait: %s\n", strerror(e));
 	}
 }
 
@@ -100,7 +100,7 @@ static void msg_cond_signal(void)
 
 	LOGL();
 	if (e) {
-		LOGE("pthread_cond_signal: %s", strerror(e));
+		LOGE("pthread_cond_signal: %s\n", strerror(e));
 		LOGE("terminating...");
 		exit(EXIT_FAILURE);
 	}
@@ -117,7 +117,7 @@ static void msg_sem_wait(void)
 	ts.tv_sec += COND_TIMEOUT;
 	e = sem_timedwait(&msg_sem, &ts);
 	if (e) {
-		LOGE("pthread_sem_wait: %s", strerror(e));
+		LOGE("pthread_sem_wait: %s\n", strerror(e));
 	}
 }
 
@@ -127,7 +127,7 @@ static void msg_sem_signal(void)
 
 	LOGL();
 	if (e) {
-		LOGE("pthread_sem_signal: %s", strerror(e));
+		LOGE("pthread_sem_signal: %s\n", strerror(e));
 		LOGE("terminating...");
 		exit(EXIT_FAILURE);
 	}
@@ -172,13 +172,13 @@ static int start_thread(int thread_id)
 
 	ret = pthread_create(&thread, NULL, client_thread, (void *)(long)thread_id);
 	if (ret) {
-		LOGE("pthread_create: %s", strerror(ret));
+		LOGE("pthread_create: %s\n", strerror(ret));
 		goto exit;
 	}
 
 	ret = pthread_detach(thread);
 	if (ret)
-		LOGE("pthread_detach: %s", strerror(ret));
+		LOGE("pthread_detach: %s\n", strerror(ret));
 
 exit:
 	return ret;
@@ -191,7 +191,7 @@ static void thread_init(void)
 
 	ret = sem_init(&msg_sem, 0, 0);
 	if (ret) {
-		LOGE("thread sem init failed: %s", strerror(ret));
+		LOGE("thread sem init failed: %s\n", strerror(ret));
 	}
 #endif
 }
@@ -212,6 +212,7 @@ int main(void)
 	msg_lock();
 	LOGI("Waiting for sem 1...\n");
 	msg_cond_wait();
+	sleep(2);
 
 	LOGI("Waiting for sem 2...\n");
 	msg_cond_wait();

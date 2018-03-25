@@ -48,7 +48,7 @@ static void *client_thread(void *arg)
 	if (fd < 0)
 		return NULL;
 
-	LOGI("CLIENT-%d connected, tid=%ld\n", fd, gettid());
+	LOGI("CLIENT-%d connected, tid=%d\n", fd, gettid());
 	running_flag = 1;
 	while (running_flag > 0) {
 		LOGI("CLIENT-%d loop ...\n", fd);
@@ -82,7 +82,6 @@ static void *client_thread(void *arg)
 static int process_connect(int client_idx, int fd)
 {
 	int ret = 0;
-	int size = 0;
 
 	if (fd < 0)
 		return -1;
@@ -112,6 +111,7 @@ int main(int argc, char **argv)
 
 	/* setup signal handler */
 	signal(SIGINT, signal_handler_func);
+	signal(SIGPIPE, signal_handler_func);
 	signal(SIGSEGV, signal_handler_func);
 
 	/* setup server socket */
