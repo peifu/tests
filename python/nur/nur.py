@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Base64 encoding/decoding and NUR parsing
+# Author: Peifu
+
 import os
 import base64
 import binascii
@@ -223,12 +226,14 @@ def base64encode(arg):
 	out = base64.b64encode(inf)
 	print('Input:                Hex string: ' + arg)
 	print('Output:    Base64 encoded string: ' + red(out))
+	return out
 
 def base64decode(arg):
 	out = base64.b64decode(arg)
 	hstr = binascii.b2a_hex(out)
 	print('Input:             Base64 string: ' + arg)
 	print('Output:       Decoded Hex string: ' + hstr)
+	return hstr
 
 def main():
 	args = get_args();
@@ -241,7 +246,8 @@ def main():
 	elif (estr != None):
 		base64encode(estr)
 	elif (dstr != None):
-		base64decode(dstr)
+		ostr = base64decode(dstr)
+		parse_ur(ostr)
 	else:
 		usage()
 
