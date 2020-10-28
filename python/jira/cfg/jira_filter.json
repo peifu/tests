@@ -1,6 +1,6 @@
 {
     "helper": {
-        "assignee": "peifu.jiang, pengguang.zhu, liqiang.jin, hangyu.li, wei.hong, pengfei.liu, zhongwei.zhao",
+        "assignee": "peifu.jiang",
         "project": "RSP, SWPL, TV, OTT, IPTV, SH",
         "priority": "Highest, High, Medium, Low, Lowest",
         "status": "OPEN, Reopened, Resolved, 'To Do', Closed, 'In Progress', 'In Code Review', Verified, Openlinux, 'Merge To Openlinux'"
@@ -11,28 +11,28 @@
             "project":"TV, OTT, IPTV, SH, SWPL, RSP",
             "priority":"Highest",
             "status": "OPEN, Reopened, Verified, 'In Progress', 'To Do', 'In Code Review'",
-            "assignee": "peifu.jiang, pengguang.zhu, liqiang.jin, hangyu.li, wei.hong, pengfei.liu, zhongwei.zhao"
+			"assignee": "peifu.jiang"
         },
         {
             "name": "SECURITY TEAM JIRA - PMLIST",
             "project":"TV, OTT, IPTV, SH",
             "priority":"Highest, High, Medium",
             "status": "OPEN, Reopened, Verified, 'In Progress', 'To Do', 'In Code Review'",
-            "assignee": "peifu.jiang, pengguang.zhu, liqiang.jin, hangyu.li, wei.hong, pengfei.liu, zhongwei.zhao"
+			"assignee": "peifu.jiang"
         },
         {
             "name": "SECURITY TEAM JIRA - REFLIST",
             "project":"SWPL",
             "priority":"Highest, High, Medium",
             "status": "OPEN, Reopened, Verified, 'In Progress', 'To Do', 'In Code Review'",
-            "assignee": "peifu.jiang, pengguang.zhu, liqiang.jin, hangyu.li, wei.hong, pengfei.liu, zhongwei.zhao"
+			"assignee": "peifu.jiang"
         },
         {
             "name": "SECURITY TEAM JIRA - RSP",
             "project":"RSP",
             "priority":"Highest, High, Medium",
             "status": "OPEN, Reopened, Verified, 'In Progress', 'To Do', 'In Code Review'",
-            "assignee": "peifu.jiang, pengguang.zhu, liqiang.jin, hangyu.li, wei.hong, pengfei.liu, zhongwei.zhao"
+			"assignee": "peifu.jiang"
         }
     ]
 }

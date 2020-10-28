@@ -1,13 +1,13 @@
 {
     "server": {
-        "smtp_server": "mail-sh.amlogic.com",
+        "smtp_server": "",
         "smtp_port": 465,
         "smtp_ssl": "False",
-        "pop_server": "mail-sh.amlogic.com",
+        "pop_server": "",
         "pop_port": 995,
         "pop_tls": "False",
         "username": "peifu.jiang",
-        "password": "!Jpf010122",
-        "user": "peifu.jiang@amlogic.com"
+        "password": "",
+        "user": "peifu.jiang"
     }
 }
