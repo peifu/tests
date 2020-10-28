@@ -6,7 +6,7 @@ import json
 import jira_client as jc
 import mail_client as mc
 
-JIRA_FILTER = "E:/study/python/jira/cfg/jira_filter.json"
+JIRA_FILTER = "cfg/jira_filter.json"
 MAIL_RECEIVER = [
     "jiangpeifu@126.com", 
     "peifu.jiang@amlogic.com"

@@ -7,12 +7,12 @@ import time
 
 DEBUG_ENABLE = 0
 
-MAIL_CONFIG = "E:/study/python/jira/cfg/mail_server.json"
-MAIL_SAVE = "E:/study/python/jira/email/email_{}.eml"
+MAIL_CONFIG = "cfg/mail_server.json"
+MAIL_SAVE = "email/email_{}.html"
 
-TEST_RECEIVER = "jiangpeifu@126.com"
+TEST_RECEIVER = "peifu.jiang@amlogic.com"
 TEST_SUBJECT = "Python Email Test"
-TEST_CONTENT = "Hello, this is a python mail test!"
+TEST_TEXT_CONTENT = "Hello, this is a python mail test!"
 
 def debug(args):
     if DEBUG_ENABLE == 1:
@@ -51,11 +51,10 @@ def receive_mail(count=1):
     #return mail.get_mail(count)
     return mail.get_latest()
 
-def save_mail(mail):
+def save_mail(buff):
     dt = time.strftime("%Y-%m-%d %H:%M")
     filepath = MAIL_SAVE.format(dt)
     fp = open(filepath, "w+")
-    buff = "TODO"
     fp.write(buff)
     fp.close()
 
@@ -66,9 +65,14 @@ def dump_mail(mail):
     for k,v in mail.items():
        print(k,v)
 
-if __name__ == "__main__":
-    # test send mail
-    send_mail(TEST_RECEIVER, TEST_SUBJECT, TEST_CONTENT)
-    # teset receiver mail
+def test_send_mail():
+    send_mail(TEST_RECEIVER, TEST_SUBJECT, TEST_TEXT_CONTENT)
+
+def test_receive_mail():
     mail = receive_mail(1)
     show_mail(mail)
+
+if __name__ == "__main__":
+    # test send mail
+    test_send_mail()
+

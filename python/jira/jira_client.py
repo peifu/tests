@@ -13,12 +13,12 @@ DEBUG_ENABLE = 0
 
 MAX_ISSUE = 50
 MAX_SUMMARY = 80
-JIRA_SERVER = "E:/study/python/jira/cfg/jira_server.json"
-JIRA_FILTER = "E:/study/python/jira/cfg/jira_filter.json"
+JIRA_SERVER = "cfg/jira_server.json"
+JIRA_FILTER = "cfg/jira_filter.json"
 
 JIRA_PATTERN = "project in ({}) AND priority in ({}) AND status in ({}) AND assignee in ({}) ORDER BY priority DESC, status ASC, assignee ASC"
 FIELD_NAMES = ["Issue", "Issuetype", "Priority", "Status", "Assingee", "Creator", "Summary"]
-FIELD_NAMES2 = ["Issue", "Issuetype", "Priority", "Status", "Assingee", "Creator", "Due Date", "Finish Date", "Summary"]
+FIELD_NAMES2 = ["Issue", "Priority", "Status", "Assingee", "Due Date", "Finish Date", "Summary"]
 
 def debug(args):
     if DEBUG_ENABLE == 1:
@@ -68,11 +68,11 @@ def init_table():
     return tb
 
 def update_table(tb, issue):
-    item = [issue.key, issue.fields.issuetype.name, issue.fields.priority.name, 
-        issue.fields.status.name, issue.fields.assignee.key, issue.fields.creator.key, 
+    item = [issue.key, issue.fields.issuetype.name, issue.fields.priority.name,
+        issue.fields.status.name, issue.fields.assignee.key, issue.fields.creator.key,
         issue.fields.summary[0:MAX_SUMMARY]]
-    item2 = [issue.key, issue.fields.issuetype.name, issue.fields.priority.name, 
-        issue.fields.status.name, issue.fields.assignee.key, issue.fields.creator.key, 
+    item2 = [issue.key, issue.fields.priority.name,
+        issue.fields.status.name, issue.fields.assignee.key,
         issue.fields.duedate, issue.fields.customfield_11614,
         issue.fields.summary[0:MAX_SUMMARY]]
     tb.add_row(item2)
@@ -143,6 +143,13 @@ def get_jira_table(filter):
     s = tb.get_string()
     return s
 
+def test_jira_html():
+    filters = get_filters(JIRA_FILTER)
+    for filter in filters[0:1]:
+        s = get_jira_html(filter)
+        print(filter["name"])
+        print(s)
+
 def test_jira_table():
     filters = get_filters(JIRA_FILTER)
     for filter in filters[0:1]:
@@ -151,4 +158,5 @@ def test_jira_table():
         print(s)
 
 if __name__ == "__main__":
+    test_jira_html()
     test_jira_table()
