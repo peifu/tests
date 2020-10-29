@@ -34,8 +34,8 @@ def init_mail_pop(server):
     return mail
 
 def send_mail(receiver, subject="", text="", html="", attachment=""):
-    server = init_server(MAIL_CONFIG)
-    mail = init_mail_stmp(server)
+    cfg = init_server(MAIL_CONFIG)
+    server = init_mail_stmp(cfg)
     mail_to = receiver
     mail_content = {
         "subject": subject,
@@ -43,11 +43,17 @@ def send_mail(receiver, subject="", text="", html="", attachment=""):
         "content_html": html,
         "attachments": attachment
     }
-    mail.send_mail(mail_to, mail_content)
+    server.send_mail(mail_to, mail_content)
+
+def send_mail2(receiver, mail, cc=""):
+    cfg = init_server(MAIL_CONFIG)
+    server = init_mail_stmp(cfg)
+    mail_to = receiver
+    server.send_mail(mail_to, mail, cc)
 
 def receive_mail(count=1):
-    server = init_server(MAIL_CONFIG)
-    mail = init_mail_pop(server)
+    cfg = init_server(MAIL_CONFIG)
+    server = init_mail_pop(cfg)
     #return mail.get_mail(count)
     return mail.get_latest()
 

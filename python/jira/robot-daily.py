@@ -8,8 +8,19 @@ import mail_client as mc
 
 JIRA_FILTER = "cfg/jira_filter.json"
 MAIL_RECEIVER = [
-    "jiangpeifu@126.com", 
     "peifu.jiang@amlogic.com"
+]
+MAIL_CC_LIST = [
+    "peifu.jiang@amlogic.com",
+    "victor.wan@amlogic.com"
+]
+MAIL_RECEIVERS = [
+    "pengguang.zhu@amlogic.com",
+    "liqiang.jin@amlogic.com",
+    "hangyu.li@amlogic.com",
+    "wei.hong@amlogic.com",
+    "pengfei.liu@amlogic.com",
+    "zhongwei.zhao@amlogic.com"
 ]
 MAIL_SUBJECT = "SECURITY TEAM JIRA LIST Weekly Report"
 
@@ -25,11 +36,11 @@ HTML_HEAD2 = """
                 padding: 0;
             }
             body{
-                font: italic 18px Georgia, serif;
+                font: italic 18px Times New Roman, serif;
                 letter-spacing: normal;
             }
             table{
-                font: bold 16px/1.4em Georgia, serif, sans-serif;
+                font: bold 16px  Times New Roman, serif;
             }
             table thead th{
                 padding: 15px;
@@ -66,7 +77,8 @@ HTML_HEAD2 = """
     </head>
     <body>
         <p><b>Guys,</b><br><br>
-        Please take a look at your own Jira. Please handle this ASAP!
+        Here is our team Jira list.
+		Please take a look at your own Jira and handle it ASAP!
         <br>
         </p>
         """
@@ -106,7 +118,8 @@ def get_filters(cfg):
     f.close()
     return filter_json["filter"]
 
-receiver = MAIL_RECEIVER
+receiver = MAIL_RECEIVERS
+cc = MAIL_CC_LIST
 subject = MAIL_SUBJECT + " - " + time.strftime("%Y%m%d")
 html = HTML_HEAD2
 filters = get_filters(JIRA_FILTER)
@@ -116,4 +129,8 @@ for filter in filters:
     html += jira_title
     html += jira_table
 html += HTML_TAIL2
-mc.send_mail(receiver, subject, "", html)
+mail = {
+	"subject": subject,
+	"content_html": html,
+}
+mc.send_mail2(receiver, mail, cc)
