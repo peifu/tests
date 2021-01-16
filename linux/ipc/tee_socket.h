@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Amlogic, Inc. All rights reserved.
+ * Copyright (C) 2021 Amlogic, Inc. All rights reserved.
  *
  * All information contained herein is Amlogic confidential.
  *
@@ -24,8 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TEE_CLIENT_SOCKET_H_
-#define TEE_CLIENT_SOCKET_H_
+#ifndef TEE_SOCKET_H_
+#define TEE_SOCKET_H_
+
+#include <stdio.h>
+
+#define TEEC_SUCCESS                  0
+#define TEEC_ERROR_BAD_PARAMETERS     0xFFFF0001
+#define TEEC_ERROR_OUT_OF_MEMORY      0xFFFF0002
+
+#define TEEC_SOCKET_TYPE_CLIENT       0
+#define TEEC_SOCKET_TYPE_SERVER       1
 
 typedef int TEEC_Result;
 typedef void* TEEC_SocketHandle;
@@ -33,7 +42,9 @@ typedef void* TEEC_SocketHandle;
 /**
  * TEEC_SocketOpen() - Open a socket handle for communication
  *
- * @param flag, reserved for future
+ * @param flag,
+ *     0: TEEC_SOCKET_TYPE_CLIENT, to open a socket handle for client
+ *     1: TEEC_SOCKET_TYPE_SERVER, to open a socket handle for server
  *
  * @param handle, out parameter return a socket handle
  *
@@ -41,6 +52,18 @@ typedef void* TEEC_SocketHandle;
  * @return other value is failed
  */
 TEEC_Result TEEC_SocketOpen(int flag, TEEC_SocketHandle *handle);
+
+/**
+ * TEEC_SocketAccept() - Accept a socket connection
+ *
+ * @param server_handle, the server socket handle
+ *
+ * @param handle, the connected client socket handle
+ *
+ * @return TEEC_SUCCESS on success
+ * @return other value is failed
+ */
+TEEC_Result TEEC_SocketAccept(TEEC_SocketHandle server_handle, TEEC_SocketHandle *client_handle);
 
 /**
  * TEEC_SocketClose() - Close the socket handle that opened by TEEC_SocketOpen()
