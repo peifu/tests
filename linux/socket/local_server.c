@@ -14,9 +14,8 @@
 #define LOGI(fmt, ...) printf(LOG_TAG fmt, ##__VA_ARGS__)
 #define LOGE(fmt, ...) printf(LOG_TAG fmt, ##__VA_ARGS__)
 
-#define SERVER_PORT 6666
 #define BUFFER_MAX 1024
-#define CLIENT_MAX 5
+#define CLIENT_MAX 4
 
 #define gettid() syscall(SYS_gettid)
 

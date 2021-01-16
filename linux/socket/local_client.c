@@ -11,8 +11,6 @@
 #define LOGI(fmt, ...) printf(LOG_TAG fmt, ##__VA_ARGS__)
 #define LOGE(fmt, ...) printf(LOG_TAG fmt, ##__VA_ARGS__)
 
-#define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 6666
 #define BUFFER_MAX 1024
 
 int main(int argc, char **argv)
@@ -23,13 +21,6 @@ int main(int argc, char **argv)
 	char rbuff[BUFFER_MAX];
 	char sbuff[BUFFER_MAX];
 	struct sockaddr_un server_addr;
-
-#if 0
-	if (argc != 2) {
-		LOGE("usage: ./client <ipaddress>\n");
-		exit(0);
-	}
-#endif
 
 	if ((sockfd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
 		LOGE("create socket error: %s(errno: %d)\n", strerror(errno),
