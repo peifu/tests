@@ -5,13 +5,17 @@
 #include <sys/msg.h>  // message queue
 #include <string.h>   // memcpy
 
-// 消息队列结构
+/*
+ * message queue struct
+ */
 struct msg_form {
     long mtype;
     char mtext;
 };
 
-// 联合体，用于semctl初始化
+/*
+ * union used to init semctl
+ */
 union sem_un
 {
     int              val; /*for SETVAL*/
@@ -19,7 +23,6 @@ union sem_un
     unsigned short  *array;
 };
 
-// 初始化信号量
 int init_sem(int sem_id, int value)
 {
     union sem_un tmp;
@@ -32,14 +35,17 @@ int init_sem(int sem_id, int value)
     return 0;
 }
 
-// P操作:
-//  若信号量值为1，获取资源并将信号量值-1
-//  若信号量值为0，进程挂起等待
+
+/*
+ * semaphore P operation:
+ *   if sem = 1, get resource and sem -= 1
+ *   if sem = 0, wait resource
+ */
 int sem_p(int sem_id)
 {
     struct sembuf sbuf;
-    sbuf.sem_num = 0; /*序号*/
-    sbuf.sem_op = -1; /*P操作*/
+    sbuf.sem_num = 0;
+    sbuf.sem_op = -1; /* P operation */
     sbuf.sem_flg = SEM_UNDO;
 
     if(semop(sem_id, &sbuf, 1) == -1)
@@ -50,14 +56,16 @@ int sem_p(int sem_id)
     return 0;
 }
 
-// V操作：
-//  释放资源并将信号量值+1
-//  如果有进程正在挂起等待，则唤醒它们
+/*
+ * semaphore V operation:
+ *   release resource and sem += 1
+ *   if process is waiting, wakeup it
+ */
 int sem_v(int sem_id)
 {
     struct sembuf sbuf;
-    sbuf.sem_num = 0; /*序号*/
-    sbuf.sem_op = 1;  /*V操作*/
+    sbuf.sem_num = 0;
+    sbuf.sem_op = 1;  /* V operation */
     sbuf.sem_flg = SEM_UNDO;
 
     if(semop(sem_id, &sbuf, 1) == -1)
@@ -68,7 +76,6 @@ int sem_v(int sem_id)
     return 0;
 }
 
-// 删除信号量集
 int del_sem(int sem_id)
 {
     union sem_un tmp;
@@ -80,7 +87,6 @@ int del_sem(int sem_id)
     return 0;
 }
 
-// 创建一个信号量集
 int creat_sem(key_t key)
 {
     int sem_id;
@@ -89,7 +95,7 @@ int creat_sem(key_t key)
         perror("semget error");
         exit(-1);
     }
-    init_sem(sem_id, 1);  /*初值设为1资源未占用*/
+    init_sem(sem_id, 1);  /* inited as 1, not used */
     return sem_id;
 }
 
@@ -100,25 +106,25 @@ int main()
     int shmid, semid, msqid;
     char *shm;
     char data[] = "this is server";
-    struct shmid_ds buf1;  /*用于删除共享内存*/
-    struct msqid_ds buf2;  /*用于删除消息队列*/
-    struct msg_form msg;  /*消息队列用于通知对方更新了共享内存*/
+    struct shmid_ds buf1;  /* buffer for shared memory */
+    struct msqid_ds buf2;  /* buffer for message queue */
+    struct msg_form msg;   /* message queue */
 
-    // 获取key值
+    /* acquire key value */
     if((key = ftok(".", 'z')) < 0)
     {
         perror("ftok error");
         exit(1);
     }
 
-    // 创建共享内存
+    /* create shared memory */
     if((shmid = shmget(key, 1024, IPC_CREAT|0666)) == -1)
     {
         perror("Create Shared Memory Error");
         exit(1);
     }
 
-    // 连接共享内存
+    /* attach shared memory */
     shm = (char*)shmat(shmid, 0, 0);
     if((int)shm == -1)
     {
@@ -127,23 +133,22 @@ int main()
     }
 
 
-    // 创建消息队列
+    /* create message queue */
     if ((msqid = msgget(key, IPC_CREAT|0777)) == -1)
     {
         perror("msgget error");
         exit(1);
     }
 
-    // 创建信号量
+    /* create semaphore */
     semid = creat_sem(key);
 
-    // 读数据
     while(1)
     {
-        msgrcv(msqid, &msg, 1, 888, 0); /*读取类型为888的消息*/
-        if(msg.mtext == 'q')  /*quit - 跳出循环*/
+        msgrcv(msqid, &msg, 1, 888, 0);
+        if(msg.mtext == 'q')
             break;
-        if(msg.mtext == 'r')  /*read - 读共享内存*/
+        if(msg.mtext == 'r')
         {
             sem_p(semid);
             printf("%s\n",shm);
@@ -151,10 +156,8 @@ int main()
         }
     }
 
-    // 断开连接
     shmdt(shm);
 
-    /*删除共享内存、消息队列、信号量*/
     shmctl(shmid, IPC_RMID, &buf1);
     msgctl(msqid, IPC_RMID, &buf2);
     del_sem(semid);
